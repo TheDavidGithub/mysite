@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>二手车</title>
+</head>
+<script>
+    function search(criteria,value)
+    {
+        //document.write(criteria+value);
+        if(value == "不限")
+        {
+            value = ""
+        }
+        if(criteria == "city")
+        {
+            window.location.href="http://127.0.0.1:8000/car/city="+value+"/brand={{select.brand.0}}/types={{select.types.0}}/time={{select.time.0}}/mileage={{select.mileage.0}}/price={{select.price.0}}/page=1";
+        }
+        if(criteria == "brand")
+        {
+            window.location.href="http://127.0.0.1:8000/car/city={{select.city.0}}/brand="+value+"/types={{select.types.0}}/time={{select.time.0}}/mileage={{select.mileage.0}}/price={{select.price.0}}/page=1";
+        }
+        if(criteria == "types")
+        {
+            window.location.href="http://127.0.0.1:8000/car/city={{select.city.0}}/brand={{select.brand.0}}/types="+value+"/time={{select.time.0}}/mileage={{select.mileage.0}}/price={{select.price.0}}/page=1";
+        }
+        if(criteria == "time")
+        {
+            window.location.href="http://127.0.0.1:8000/car/city={{select.city.0}}/brand={{select.brand.0}}/types={{select.types.0}}/time="+value+"/mileage={{select.mileage.0}}/price={{select.price.0}}/page=1";
+        }
+        if(criteria == "mileage")
+        {
+            window.location.href="http://127.0.0.1:8000/car/city={{select.city.0}}/brand={{select.brand.0}}/types={{select.types.0}}/time={{select.time.0}}/mileage="+value+"/price={{select.price.0}}/page=1";
+        }
+        if(criteria == "price")
+        {
+            window.location.href="http://127.0.0.1:8000/car/city={{select.city.0}}/brand={{select.brand.0}}/types={{select.types.0}}/time={{select.time.0}}/mileage={{select.mileage.0}}/price="+value+"/page=1";
+        }
+    }
+    function button_onclick(value)
+    {
+        if(value == "<")
+        {
+            if({{page_num}} > {{total_page}})
+            {
+                window.location.href="http://127.0.0.1:8000/car/city={{select.city.0}}/brand={{select.brand.0}}/types={{select.types.0}}/time={{select.time.0}}/mileage={{select.mileage.0}}/price={{select.car_price.0}}/page="+{{total_page}};
+            }
+            else
+            {
+                window.location.href="http://127.0.0.1:8000/car/city={{select.city.0}}/brand={{select.brand.0}}/types={{select.types.0}}/time={{select.time.0}}/mileage={{select.mileage.0}}/price={{select.car_price.0}}/page="+{{last_page}};
+            }
+        }
+        if(value == ">")
+        {
+            if({{page_num}} < 1)
+            {
+                window.location.href="http://127.0.0.1:8000/car/city={{select.city.0}}/brand={{select.brand.0}}/types={{select.types.0}}/time={{select.time.0}}/mileage={{select.mileage.0}}/price={{select.car_price.0}}/page=1";
+            }
+            else
+            {
+                window.location.href="http://127.0.0.1:8000/car/city={{select.city.0}}/brand={{select.brand.0}}/types={{select.types.0}}/time={{select.time.0}}/mileage={{select.mileage.0}}/price={{select.car_price.0}}/page="+{{next_page}};
+            }
+        }
+        if(value != ">" && value != "<")
+        {
+            window.location.href="http://127.0.0.1:8000/car/city={{select.city.0}}/brand={{select.brand.0}}/types={{select.types.0}}/time={{select.time.0}}/mileage={{select.mileage.0}}/price={{select.car_price.0}}/page="+value;
+        }
+    }
+</script>
+<body>
+    <div>
+        <div>
+            <table align="center" width="1080">
+                <tr height="35">
+                {% if have_search %}
+                    <td>
+                        <table>
+                            <tr>
+                                <td width="1000">
+                                    <table>
+                                        <tr>
+                                        {% for value in sorted_select %}
+                                            {% if value.1.0 %}
+                                                <td>{{value.1.1}}:</td>
+                                                <td>{{value.1.0}}</td>
+                                                <td width="15"></td>
+                                            {% endif %}
+                                        {% endfor %}
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <form action="http://127.0.0.1:8000/car/city=/brand=/types=/time=/mileage=/price=/page=1">
+                                        <input type="submit" value="清除全部">
+                                    </form>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+                </tr>
+                <tr height="35">
+                    <td>
+                        <table>
+                            <tr>
+                            {% for one_select in sorted_select %}
+                                <td>
+                                    <font>{{one_select.1.1}}:</font>
+                                </td>
+                                <td>
+                                    <select style="width:100px;" id={{one_select.0}} onchange="search(this.id,this.value)">
+                                    {% if one_select.1.0 %}
+                                        <option value="不限">--不限--</option>
+                                        {% if one_select.1.2 %}
+                                            {% for element in one_select.1.2 %}
+                                                {% if element == one_select.1.0 %}
+                                                    <option selected="selected" disabled="disabled">{{element}}</option>
+                                                {% else %}
+                                                    <option value="{{element}}">{{element}}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            <option selected="selected" disabled="disabled">{{one_select.1.0}}</option>
+                                        {% endif %}
+                                    {% else %}
+                                        <option selected="selected" value="不限" disabled="disabled">--不限--</option>
+                                        {% for element in one_select.1.2 %}
+                                            <option value="{{element}}">{{element}}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                    </select>
+                                </td>
+                                <td width="15"></td>
+                            {% endfor %}
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <table border="2" width="1116" align="center" style="border-collapse:collapse;" Cellpadding="5px">
+                <tr>
+                    <td>
+                        <table border="2" style="border-collapse:collapse;" Cellpadding="5px">
+                        {% if car_list %}
+                            {% for car_1 in car_list %}
+                                <tr>
+                                {% for car in car_1 %}
+                                    <td width="264" height="176">
+                                        <div>
+                                            <div>
+                                                <a href={{car.car_url}}>
+                                                    <img src={{car.image_url}} width="264" height="176">
+                                                </a>
+                                            </div>
+                                            <div>
+                                                <span>
+                                                    <div style="height:38px;">
+                                                        <a href={{car.car_url}} style="text-decoration: NONE;">
+                                                            {{car.brand}} {{car.types}} {{car.model}}
+                                                        </a>
+                                                    </div>
+                                                    <div>
+                                                        <span>{{car.car_price}}</span>
+                                                        <span style="float:right;">优信二手车</span>
+                                                    </div>
+                                                    <div>
+                                                        <span>
+                                                            <div>
+                                                                <span>{{car.car_time}}上牌</span>
+                                                                <span style="float:right;">{{car.mileage}}</span>
+                                                            </div>
+                                                            <div>
+                                                                <span>变速箱: {{car.transmission_mode}}</span>
+                                                                {% if car.have_accident == "False" %}
+                                                                    <span style="float:right;">无事故</span>
+                                                                {% endif %}
+                                                            </div>
+                                                        </span>
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td></td>
+                            </tr>
+                        {% endif %}
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                    {% if page_num <= 1 %}
+                        <input type="button" value="<" disabled="disabled">
+                    {% else %}
+                        <input type="button" value="<" onClick="button_onclick(this.value)">
+                    {% endif %}
+                    {% for page in page_list %}
+                        {% if page > total_page %}
+                            <input type="button" value={{page}} disabled="disabled">
+                        {% else %}
+                            {% if page == page_num %}
+                                <input type="button" value={{page}} style="color: #d7d7d7;border: solid 1px #333;background: #333;background: -webkit-gradient(linear, left top, left bottom, from(#666), to(#000));background: -moz-linear-gradient(top, #666, #000);filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#666666', endColorstr='#000000');" onClick="button_onclick(this.value)">
+                            {% else %}
+                                <input type="button" value={{page}} onClick="button_onclick(this.value)">
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_num >= total_page %}
+                        <input type="button" value=">" disabled="disabled">
+                    {% else %}
+                        <input type="button" value=">" onClick="button_onclick(this.value)">
+                    {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+</body>
+</html>
